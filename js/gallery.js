@@ -64,25 +64,31 @@ const images = [
       },
     ];
     
-const gallery = document.querySelector(".gallery");
+    const gallery = document.querySelector(".gallery");
 
-images.forEach((image) => {
-  gallery.innerHTML += `<li><a><img style="width:360px" 
-  src="${image.preview}" 
-  alt="${image.description}" 
-  data-origin="${image.original}" /></a></li>`;
-});
-
-gallery.addEventListener("click", (event) => {
-  event.preventDefault();
-
-  if (event.target.tagName === "IMG") {
-    const src = event.target.getAttribute("data-origin");
-    const alt = event.target.getAttribute("alt");
-
-    const modalContent = `<img src="${src}" alt="${alt}"/>`;
-    const instance = basicLightbox.create(modalContent);
-
-    instance.show();
-  }
-});
+    const preview = images.map(
+      ({ preview, original, description }) =>
+        `<a href="${original}" class="gallery-link"><img class="gallery-image" src="${preview}" data-source="${original}" alt="${description}" width="510" height="340"/></a>`
+    );
+    
+    preview.forEach((image) => {
+      const li = document.createElement("li");
+      li.innerHTML = image;
+      li.classList.add("gallery-item");
+      gallery.append(li);
+    });
+    
+    gallery.addEventListener("click", (event) => {
+      event.preventDefault();
+      const target = event.target;
+    
+      if (target.tagName === "IMG") {
+        const src = target.getAttribute("data-source");
+        const alt = target.getAttribute("alt");
+    
+        const modalContent = `<img src="${src}" alt="${alt}"/>`;
+        const instance = basicLightbox.create(modalContent);
+    
+        instance.show();
+      }
+    });
